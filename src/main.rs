@@ -8,17 +8,22 @@ fn size_as_str(size: Option<u64>) -> String {
 }
 
 fn print_entry(entry: &DirEntry, lsize: Option<u64>, psize: Option<u64>) -> Result<(), Error> {
-    let filename = entry.file_name();
+    let raw_filename = entry.file_name();
+    let raw_filename = raw_filename.to_str().unwrap_or("???");
 
-    let mut entry_str = String::from(filename.to_str().unwrap_or("invalid utf8 sequence"));
 
-    entry_str.push_str(":\tlog ");
-    entry_str.push_str(&size_as_str(lsize));
+    let mut filename = String::from(raw_filename);
+    filename.truncate(32);
+    if filename.len() < raw_filename.len() {
+        if let Some((idx, _)) = filename.char_indices().nth_back(2) {
+            filename.replace_range(idx.., "...");
+        }
+    }
 
-    entry_str.push_str("\tphy ");
-    entry_str.push_str(&size_as_str(psize));
+    let lsize = size_as_str(lsize);
+    let psize = size_as_str(psize);
 
-    println!("{entry_str}");
+    println!(" - {filename:32}\tlog {lsize:>5} B\tphy {psize:>5} B");
 
     Ok(())
 }
