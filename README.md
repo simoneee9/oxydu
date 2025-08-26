@@ -1,6 +1,7 @@
 # oxydu
 
-fast disk usage analyzer
+fast disk usage analyzer. created with the purpose of learning rust from the basics without dependencies
+doing the heavy lifting for me.
 
 ## roadmap
 
